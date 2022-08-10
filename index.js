@@ -21,7 +21,7 @@ app.use('/api', require('./routes/area-page.js'));
 const PORT = process.env.PORT || 5000;
 
 // step 3 : heroku
-if(process.env.NODE_ENV == "production"){
+if(process.env.NODE_ENV == "production" || process.env.NODE_ENV == "staging"){
     app.use(express.static("client/build"));
     const path = require("path");
     app.get("*", (req, res)=>{
