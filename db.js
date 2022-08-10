@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-// const mongoURI = "mongodb://localhost:27017/hackathon"
-// Database name : hackathon
-const mongoURI = "mongodb+srv://eValleyDB:hackathon123@cluster0.irkqaqh.mongodb.net/eValleyDB?retryWrites=true&w=majority"
+
+const mongoURI = process.env.DATABASE;
 
 const connectToMongo = ()=>{
     mongoose.connect(mongoURI).then(()=>{
