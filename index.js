@@ -10,7 +10,7 @@ app.use(cors());
 
 // connectToMongo();
 const DB = "mongodb+srv://eValleyDB:hackathon123@cluster0.irkqaqh.mongodb.net/eValleyDB?retryWrites=true&w=majority";
-mongoose.connect(DB).then(()=>{
+mongoose.connect(process.env.DATABASE).then(()=>{
     console.log("connection succesfully");
 }).catch((err)=>{console.log("No connection", err)})
 // to use req.body
