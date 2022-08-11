@@ -3,11 +3,16 @@ const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config({path: './config.env'});
+const { default: mongoose } = require('mongoose');
 
-const connectToMongo = require('./db');
+// const connectToMongo = require('./db');
 app.use(cors());
 
-connectToMongo();
+// connectToMongo();
+const DB = "mongodb+srv://eValleyDB:hackathon123@cluster0.irkqaqh.mongodb.net/eValleyDB?retryWrites=true&w=majority";
+mongoose.connect(DB).then(()=>{
+    console.log("connection succesfully");
+}).catch((err)=>{console.log("No connection", err)})
 // to use req.body
 app.use(express.json());
 
