@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-
 const dotenv = require('dotenv');
 dotenv.config({path: './config.env'});
 const connectToMongo = require('./db');
@@ -8,14 +7,15 @@ const connectToMongo = require('./db');
 const app = express();
 app.use(cors());
 
+connectToMongo();
 // to use req.body
 app.use(express.json());
 
+// https://evalleyhackathon.herokuapp.com/
 
 app.use('/api/auth', require('./routes/auth.js'));
 
 app.use('/api', require('./routes/area-page.js'));
-connectToMongo();
 
 const PORT = process.env.PORT || 5000;
 

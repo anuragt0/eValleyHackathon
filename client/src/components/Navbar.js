@@ -15,23 +15,15 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <a className="navbar-brand" href="#">
           eValley
         </a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div className="collapse navbar-collapse" id="navbarCollapse">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
               <Link className="nav-link active" to="/">
@@ -49,20 +41,17 @@ const Navbar = () => {
               </Link>
             </li>
 
-            {/* <li className="nav-item active">
-        <Link className="nav-link active" to="#">Something</Link>
-      </li> */}
           </ul>
           <ul className="nav navbar-nav navbar-right">
             {!localStorage.getItem("token") ? (
               <form className="d-flex">
                 <li className="nav-item active">
-                  <Link className="nav-link active" to="/login">
+                  <Link className="nav-link active mx-3" to="/login">
                     Login
                   </Link>
                 </li>
                 <li className="nav-item active">
-                  <Link className="nav-link active" to="/signup">
+                  <Link className="nav-link active mx-3" to="/signup">
                     Sign up
                   </Link>
                 </li>
@@ -80,6 +69,25 @@ const Navbar = () => {
           </ul>
         </div>
       </nav>
+      {/* <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a href="#" class="navbar-brand">Brand</a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav">
+                <a href="#" class="nav-item nav-link active">Home</a>
+                <a href="#" class="nav-item nav-link">Profile</a>
+                <a href="#" class="nav-item nav-link">Messages</a>
+                <a href="#" class="nav-item nav-link disabled" tabindex="-1">Reports</a>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <a href="#" class="nav-item nav-link">Login</a>
+            </div>
+        </div>
+    </div>
+</nav> */}
     </div>
   );
 };

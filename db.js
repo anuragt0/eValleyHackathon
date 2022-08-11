@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
+// const mongoURI = process.env.DATABASE;
 const mongoURI = process.env.DATABASE;
-// console.log("hererer: ", mongoURI);
+
+console.log("hererer: ", mongoURI);
 const connectToMongo = ()=>{
     mongoose.connect(mongoURI).then(()=>{
         console.log("Connected to Database");
