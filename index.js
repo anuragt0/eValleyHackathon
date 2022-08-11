@@ -10,9 +10,14 @@ app.use(cors());
 
 // connectToMongo();
 const DB = "mongodb+srv://eValleyDB:hackathon123@cluster0.irkqaqh.mongodb.net/eValleyDB?retryWrites=true&w=majority";
-mongoose.connect(process.env.DATABASE).then(()=>{
-    console.log("connection succesfully");
-}).catch((err)=>{console.log("No connection", err)})
+// mongoose.connect(process.env.DATABASE).then(()=>{
+//     console.log("connection succesfully");
+// }).catch((err)=>{console.log("No connection", err)})
+
+mongoose.connect(process.env.DATABASE || 
+    "mongodb://localhost:27017/hackathon", { useNewUrlParser: true })
+        .then(connect => console.log('connected to mongodb..'))
+        .catch(e => console.log('could not connect to mongodb', e))
 // to use req.body
 app.use(express.json());
 
