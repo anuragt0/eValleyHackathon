@@ -6,9 +6,10 @@ const UserProfile = () => {
     const authToken = localStorage.getItem('token');
     console.log(authToken);
     console.log("role, ", user.role);
+    const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/auth/getuser`, {
+        fetch(`${host}/api/auth/getuser`, {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',

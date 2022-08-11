@@ -11,7 +11,7 @@ const Slots = () => {
     const refClose = useRef(null);
     const {area, setArea} = context;
     let temp_area = null;
-    const host = "http://localhost:5000";
+    const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
 
     // const reffArray = [];
     // for (let index = 0; index < area.totalSlots; index++) {
@@ -133,9 +133,9 @@ const Slots = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
+              <div className="modal-title" id="exampleModalLabel">
                 <h4>Confirm booking </h4>
-              </h5>
+              </div>
               <button
                 type="button"
                 className="btn-close"

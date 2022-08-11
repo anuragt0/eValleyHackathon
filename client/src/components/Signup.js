@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 const Signup = () => {
     const [credentials, setCredentials] = useState({name:"", email: "", phone:"", password: "", cpassword: ""}) 
     let navigate = useNavigate();
+    const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const {name, email, password, phone}=credentials;
-        const response = await fetch("http://localhost:5000/api/auth/createuser", {
+        const response = await fetch(`${host}/api/auth/createuser`, {
             
             method: 'POST',
             headers: {

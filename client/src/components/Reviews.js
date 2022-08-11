@@ -7,10 +7,12 @@ const Reviews = () => {
     const {area} = context;
     // console.log("Clicked area is: ", area);
     const [reviewsArray, setReviewsArray] = useState([]);
+    const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
+
 
     useEffect(() => {
         const data = {areaid: String(area._id)};
-        fetch(`http://localhost:5000/api/getreviews`, {
+        fetch(`${host}/api/getreviews`, {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',

@@ -29,6 +29,9 @@ app.use('/api', require('./routes/area-page.js'));
 
 const PORT = process.env.PORT || 5000;
 
+// This may be the solution the that major problem
+// const API = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com/' : 'http://localhost:5000/';
+
 // step 3 : heroku
 if(process.env.NODE_ENV == "production" || process.env.NODE_ENV == "staging"){
     app.use(express.static("client/build"));

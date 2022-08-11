@@ -8,7 +8,9 @@ const Area = () => {
     const ref = useRef(null);
     const refClose = useRef(null);
     const navigate = useNavigate();
-    const host = "http://localhost:5000";
+    // const host = "http://localhost:5000";
+    const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
+
 
     const [areas, setAreas] = useState([]);
     
