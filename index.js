@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const app = express();
 const dotenv = require('dotenv');
 dotenv.config({path: './config.env'});
-const connectToMongo = require('./db');
 
-const app = express();
+const connectToMongo = require('./db');
 app.use(cors());
 
 connectToMongo();
