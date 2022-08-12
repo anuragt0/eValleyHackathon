@@ -79,7 +79,7 @@ router.post("/auth/addarea",fetchuser, [
                 totalSlots: req.body.totalslots
             })
     
-            const totalSlots = req.body.totalslots;
+            const totalSlots = Number(req.body.totalslots);
             let temp = 1;
             for (let i = 0; i < totalSlots; i++) {
                 let slot1 = await Slot.create({
@@ -173,6 +173,24 @@ router.post("/getreviews", async(req, res)=>{
     res.json(allReviews);
 })
 
+// DELETING AREA WITH ITS SLOTS
+router.delete("/auth/removearea",fetchuser, async(req, res)=>{
+    const areaID = req.body.areaID;
+    const userID = req.user.id;
+    const loggedInUser = await User.findOne({_id: userID});
+    // console.log("here1", loggedInUser);
+    if(loggedInUser.role==="user"){
+        res.status(401).send({ error: "Access denied, please login with correct credentials" })
+    }
+    else{
+        await Slot.deleteMany({whichArea: areaID});
+        await Area.deleteOne({_id: areaID})
+        res.json({success: true, msg: "Area and its slots area deleted successfully"})
+    }
+
+})
+
+
 //------------------------------- FOR ADMIN ---------------------------
 router.get("/auth/admin", fetchuser, async (req, res)=>{
     // Only admin can access this route
@@ -185,8 +203,7 @@ router.get("/auth/admin", fetchuser, async (req, res)=>{
     else{
         const allUsers = await User.find();
         const allAreas = await Area.find();
-        const allSlots = await Slot.find();
-        res.json({allUsers, allAreas, allSlots});
+        res.json({allUsers, allAreas});
     }
 
 })
