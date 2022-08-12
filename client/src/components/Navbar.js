@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect, useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
+import AreaContext from '../context/AreaContext';
 
 const Navbar = () => {
+    const context = useContext(AreaContext);
+    const {isAdmin, setIsAdmin} = context;
+
     const navigate = useNavigate();
+    const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
 
     const handleLogout = ()=>{
         localStorage.removeItem('token');
@@ -12,10 +17,38 @@ const Navbar = () => {
     const showUserProfile = ()=>{
         navigate('/profile')
     }
+    
+
+    useEffect(() => {
+    //   const authToken = localStorage.getItem('token');
+    //   console.log("authtoken is: ", authToken);
+      if(localStorage.getItem('token')){
+        // console.log("hereeeeeeeeee");
+        fetch(`${host}/api/auth/getuser`, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('token')
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('USER IS:', data);
+            if(data.role==='admin'){
+                setIsAdmin(true);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+      }
+
+    }, [isAdmin])
+    
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <a className="navbar-brand" href="#">
           eValley
         </a>
@@ -26,7 +59,7 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarCollapse">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
-              <Link className="nav-link active" to="/">
+              <Link className="nav-link active" data-togg to="/">
                 Home <span className="sr-only">(current)</span>
               </Link>
             </li>
@@ -58,6 +91,13 @@ const Navbar = () => {
               </form>
             ) : (
                 <>
+                {/* CHECK IF USER IS ADMIN */}
+                {console.log("ISADMIN: ", isAdmin)}
+                {isAdmin?(<li className="nav-item active">
+                  <Link className="nav-link active mx-3" to="/admin">
+                    <button className="btn btn-success">Admin stuff</button> 
+                  </Link>
+                </li>):(<p></p>)}
                 <button className="mx-3" onClick={showUserProfile}>
                     <i className="fa-solid fa-user " onClick={showUserProfile}></i>
                 </button>

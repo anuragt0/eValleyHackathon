@@ -1,14 +1,19 @@
-import {React, useState} from 'react'
+import {React, useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
+import AreaContext from '../context/AreaContext';
 
 
 const Signup = () => {
+    const context = useContext(AreaContext);
+    const {isAdmin, setIsAdmin} = context;
+
     const [credentials, setCredentials] = useState({name:"", email: "", phone:"", password: "", cpassword: ""}) 
     let navigate = useNavigate();
     const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
 
 
     const handleSubmit = async (e) => {
+        setIsAdmin(false);
         e.preventDefault();
         const {name, email, password, phone}=credentials;
         const response = await fetch(`${host}/api/auth/createuser`, {
@@ -20,13 +25,14 @@ const Signup = () => {
             body: JSON.stringify({name, email, password, phone})
         });
         const json = await response.json()
-        console.log(json);
+        // console.log(json);
         if(json.success){
             // Save the auth token and redirect
             localStorage.setItem('token', json.authtoken); 
             navigate("/areas");
             console.log("Account created successfully");
             // props.showAlert("Account created succesfully", "success");
+            window.location.reload()
         }
         else{
             // props.showAlert("Invalid details", "danger");

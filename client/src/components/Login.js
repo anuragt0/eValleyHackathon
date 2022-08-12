@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
+import AreaContext from '../context/AreaContext';
+import Navbar from './Navbar';
 
 const Login = (props) => {
     const navigate = useNavigate();
+    const context = useContext(AreaContext);
+    const {isAdmin, setIsAdmin} = context;
 
     const [credentials, setCredentials] = useState({email: "", password: ""});
     const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
@@ -25,6 +29,26 @@ const Login = (props) => {
             localStorage.setItem('token', json.authtoken); 
             navigate("/areas");
             // props.showAlert("Logged in succesfully", "success");
+            // Checking if user is admin or not
+            fetch(`${host}/api/auth/getuser`, {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('token')
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log('USER IS:', data);
+                if(data.role==='admin'){
+                    setIsAdmin(true);
+                }
+                // Navbar.forceUpdate();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            window.location.reload();
         }
         else{
             console.log("Please enter valid credentials");

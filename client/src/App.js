@@ -10,6 +10,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import UserProfile from './components/UserProfile';
 import Reviews from './components/Reviews';
+import Admin from './components/Admin';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                 <Route exact path="/login" element={<Login/>} />
                 <Route exact path="/signup" element={<Signup />} />
                 <Route exact path="/profile" element={<UserProfile />} />
+                <Route exact path="/admin" element={<Admin />} />
                 {/* <Route index element={<div>Default Page Content</div>}/> */}
             </Routes>
             </div>
