@@ -189,6 +189,43 @@ router.delete("/auth/removearea",fetchuser, async(req, res)=>{
     }
 
 })
+// Delete a user
+router.delete("/auth/deleteuser", fetchuser, async(req, res)=>{
+    const userID = req.body.userID;
+    const loggedInUser = await User.findOne({_id: req.user.id});
+
+    if(loggedInUser.role==="user"){
+        res.status(401).send({ error: "Access denied, please login with correct credentials" })
+    }
+    else{
+        await User.deleteOne({_id: userID});
+        res.json({success: true, msg: "User deleted successfully"})
+    }
+})
+
+// Make user admin
+router.post("/auth/makeadmin",fetchuser, async(req, res)=>{
+    // login and authentication is required
+    const userID = req.body.userID;
+    const loggedInUser = await User.findOne({_id: req.user.id});
+
+    const userr = await User.findOne({_id: userID});
+
+    if(loggedInUser.role==="user"){
+        res.status(401).send({ error: "Access denied, please login with correct credentials" })
+    }
+    else{
+        let makeuseradmin;
+        if(userr.role==='user'){
+            makeuseradmin = await User.findOneAndUpdate({_id: userID}, {role: "admin"}, {new: true});
+        }
+        else{
+            makeuseradmin = await User.findOneAndUpdate({_id: userID}, {role: "user"}, {new: true});
+        }
+        res.json(makeuseradmin)
+    }
+})
+
 
 
 //------------------------------- FOR ADMIN ---------------------------

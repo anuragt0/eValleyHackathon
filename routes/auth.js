@@ -40,7 +40,8 @@ router.post(
         name: req.body.name,
         password: secPass,
         email: req.body.email,
-        role: req.body.role
+        role: req.body.role,
+        phone: req.body.phone
       });
       const data = {
         user: {
