@@ -13,6 +13,7 @@ import Reviews from './components/Reviews';
 import Admin from './components/Admin';
 import AdminAreas from './components/AdminAreas';
 import AdminUsers from './components/AdminUsers';
+import AdminRevenue from './components/AdminRevenue';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route exact path="/admin" element={<Admin />} />
                 <Route exact path="/admin/areas" element={<AdminAreas />} />
                 <Route exact path="/admin/users" element={<AdminUsers />} />
+                <Route exact path="/admin/revenue" element={<AdminRevenue />} />
                 {/* <Route index element={<div>Default Page Content</div>}/> */}
             </Routes>
             </div>
