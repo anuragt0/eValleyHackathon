@@ -9,7 +9,8 @@ const { default: mongoose } = require('mongoose');
 app.use(cors());
 
 // connectToMongo();
-const DB = "mongodb://localhost:27017/hackathon";
+// const DB = "mongodb://localhost:27017/hackathon";
+
 // mongoose.connect(process.env.DATABASE).then(()=>{
 //     console.log("connection succesfully");
 // }).catch((err)=>{console.log("No connection", err)})

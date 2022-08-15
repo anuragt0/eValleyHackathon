@@ -25,22 +25,37 @@ router.post("/getslots", async(req, res)=>{
     res.json(allSlots);
 })
 
-router.post("/bookslot",fetchuser, async(req, res)=>{
+router.post("/auth/bookslot",fetchuser, async(req, res)=>{
     // login and authentication is required
+    const userID = req.user.id;
+    const slotNum = req.body.slotnumber;
+    const areaID = req.body.areaID;
+    const selectedArea = await Area.findOne({_id: areaID});
+    const slotToBeBooked = await Slot.findOne({whichArea: areaID, number: slotNum});
+    // console.log(selectedArea);
+    // console.log(slotToBeBooked);
+    if(slotToBeBooked.isBooked==true){
+        return res.json({success: false, messase: "Slot is already booked, kindly pick another slot.."})
+    }
+    // Check if this user has already booked 2 slots
+    // One user can only book atmost 2 slots
+    let count = 0;
+    const allSlots = await Slot.find({whichArea: areaID});
+    // console.log("allSlots: ", allSlots);
+    for (let index = 0; index < allSlots.length; index++) {
+        const slot = allSlots[index];
+        if(String(slot.user)===String(userID)){
+            count++;
+        }
+    }
+    if(count>=2){
+        return res.json({success:false, msg: "Cannot book more than 2 slots"})
+    }
     try {
-        const userID = req.user.id;
-        // console.log("here", req.user);
-        const slotNum = req.body.slotnumber;
-        const areaID = req.body.areaID;
-        const slotToBeBooked = await Slot.findOne({whichArea: areaID, number: slotNum});
-        if(slotToBeBooked.isBooked==true){
-            res.json({messase: "Slot is already booked, kindly pick another slot.."})
-        }
-        else{
-            const slotToBeBooked1 = await Slot.findOneAndUpdate({whichArea: areaID, number: slotNum}, {isBooked: true, user: userID, date: Date.now()}, {new: true});
-            res.json(slotToBeBooked1);
-        }
-
+        const areaaa = await Area.findOneAndUpdate({_id: areaID}, {totalBookedSlots: selectedArea.totalBookedSlots+1}, {new: true})
+        const slotToBeBooked1 = await Slot.findOneAndUpdate({whichArea: areaID, number: slotNum}, {isBooked: true, user: userID, date: Date.now()}, {new: true});
+        return res.json({success: true, msg: "Slot is booked successfully"});
+        
     } catch (error) {
         res.json(error);
     }
@@ -76,7 +91,8 @@ router.post("/auth/addarea",fetchuser, [
             const newArea = await Area.create({
                 name: req.body.name,
                 address: req.body.address,
-                totalSlots: req.body.totalslots
+                totalSlots: req.body.totalslots,
+                totalBookedSlots: 0
             })
     
             const totalSlots = Number(req.body.totalslots);
@@ -226,6 +242,37 @@ router.post("/auth/makeadmin",fetchuser, async(req, res)=>{
     }
 })
 
+router.get("/auth/emptyslots",  fetchuser, async(req, res)=>{
+    // login and authentication is required
+    const userID = req.body.userID;
+    const loggedInUser = await User.findOne({_id: req.user.id});
+    if(loggedInUser.role==="user"){
+        return res.status(401).send({ error: "Access denied, please login with correct credentials" })
+    }
+
+    await Slot.updateMany({}, {isBooked: false, user: null})
+    await Area.updateMany({}, {totalBookedSlots: 0});
+    res.json({success: true, msg: "All slots are deallocated successfully"});
+    
+})
+
+router.get("/auth/getrevenue", fetchuser, async (req, res)=>{
+    const userID = req.user.id;
+    const loggedInUser = await User.findOne({_id: userID});
+    // console.log("here1", loggedInUser);
+    if(loggedInUser.role==="user"){
+        return res.status(401).send({ error: "Access denied" })
+    }
+    let revenue = 0;
+    let pricePerSlot = 10;
+    const areas = await Area.find();
+    console.log("area:", areas);
+    areas.forEach((area)=>{
+        revenue += (area.totalBookedSlots*pricePerSlot);
+    })
+    console.log("revenue is", revenue);
+    res.json(revenue);
+})
 
 
 //------------------------------- FOR ADMIN ---------------------------

@@ -16,6 +16,14 @@ const Signup = () => {
         setIsAdmin(false);
         e.preventDefault();
         const {name, email, password, phone}=credentials;
+        if(name.length<3){
+            alert('Name must be atleast 3 characters long');
+            return;
+        }
+        if((phone[0]!=='6' && phone[0]!=='7' &&phone[0]!=='8' &&phone[0]!=='9' ) || phone.length!=10){
+            alert('Invalid phone number');
+            return;
+        }
         const response = await fetch(`${host}/api/auth/createuser`, {
             
             method: 'POST',
@@ -36,7 +44,8 @@ const Signup = () => {
         }
         else{
             // props.showAlert("Invalid details", "danger");
-            console.log("Some error");
+            alert("Please enter valid details")
+            // console.log("Some error");
         }
 
         
@@ -64,7 +73,7 @@ const Signup = () => {
                   <div className="d-flex flex-row align-items-center mb-4">
                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div className="form-outline flex-fill mb-0">
-                      <input type="text" id="form3Example1c1" className="form-control"  name='name' onChange={onChange}/>
+                      <input type="text" id="form3Example1c1" className="form-control"  name='name' onChange={onChange} minLength={3}/>
                       <label className="form-label" htmlFor="form3Example1c1">Your Name</label>
                     </div>
                   </div>

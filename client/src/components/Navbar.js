@@ -33,7 +33,7 @@ const Navbar = () => {
         })
         .then((response) => response.json())
         .then((data) => {
-            console.log('USER IS:', data);
+            // console.log('USER IS:', data);
             if(data.role==='admin'){
                 setIsAdmin(true);
             }
@@ -43,7 +43,7 @@ const Navbar = () => {
         });
       }
 
-    }, [isAdmin])
+    }, [])
     
 
   return (
@@ -92,7 +92,7 @@ const Navbar = () => {
             ) : (
                 <>
                 {/* CHECK IF USER IS ADMIN */}
-                {console.log("ISADMIN: ", isAdmin)}
+                {/* {console.log("ISADMIN: ", isAdmin)} */}
                 {isAdmin?(<li className="nav-item active">
                   <Link className="nav-link active mx-3" to="/admin">
                     <button className="btn btn-success">Admin stuff</button> 

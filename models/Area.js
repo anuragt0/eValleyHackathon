@@ -15,6 +15,10 @@ const AreaSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    totalBookedSlots: {
+        type: Number,
+        default: 0
+    },
     avgRating: {
         type: Number,
         default: null,

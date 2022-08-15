@@ -13,37 +13,11 @@ const Slots = () => {
     let temp_area = null;
     const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
 
-    // const reffArray = [];
-    // for (let index = 0; index < area.totalSlots; index++) {
-    //     const reff1 = useRef(null);
-    //     reffArray.push(reff1);
-    // }
-
-    // if(area==null){
-    //     localStorage.setItem("areaa", String(area._id));
-    // }
-    // if(!localStorage.getItem('areaa')){
-    //     localStorage.setItem("areaa", String(area._id));
-    // }
-    // else{
-    //     // setArea(localStorage.getItem('areaa'));
-    //     temp_area = localStorage.getItem('areaa')
-    // }
 
     const [slots, setSlots] = useState([]);
 
     useEffect(() => {
         let data;
-        // const areaID = area._id;
-        // {
-        //     if(area==null){
-        //         data = {"areaID": temp_area};
-        //     }
-        //     else{
-        //         data = {"areaID": area._id};
-        //     }
-        // }
-        // console.log("Show all slots of area with id: ",areaID);
         data = {"areaID": area._id};
         fetch(`${host}/api/getslots`, {
             method: 'POST', 
@@ -87,7 +61,7 @@ const Slots = () => {
         // Book the slot with number clickedSlott and area id area._id
         const authToken = localStorage.getItem('token');
         const data = {areaID: area._id, slotnumber: clickedSlott.number};
-        fetch(`${host}/api/bookslot`, {
+        fetch(`${host}/api/auth/bookslot`, {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
@@ -98,15 +72,16 @@ const Slots = () => {
             .then((response) => response.json())
             .then((dataa) => {
                 console.log('Successfull:', dataa);
-                
+                if(dataa.success){
+                    clickedSlott.reff.current.style.backgroundColor = "#e28743";
+                }
+                else{
+                    alert(dataa.msg);
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
-            // console.log(document.getElementById(clickedSlott.number))
-            // .style.backgroundColor = "#e28743";
-            clickedSlott.reff.current.style.backgroundColor = "#e28743";
-
     }
     const myRefs = useRef([]);
     myRefs.current = slots.map((element, i) => myRefs.current[i] ?? createRef());

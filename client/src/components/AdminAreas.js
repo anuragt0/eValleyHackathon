@@ -1,4 +1,6 @@
 import {React, useEffect, useState, useRef} from 'react'
+import schedule from 'node-schedule'
+
 
 const AdminAreas = () => {
     const host = process.env.NODE_ENV === 'production' ? 'https://evalleyhackathon.herokuapp.com' : 'http://localhost:5000';
@@ -9,8 +11,30 @@ const AdminAreas = () => {
     const refClose = useRef(null);
     const ref2 = useRef(null);
     const refClose2 = useRef(null);
+    const ref3 = useRef(null);
+    const refClose3 = useRef(null);
 
     const [newArea, setNewArea] = useState({name: "", address: "", totalslots: null});
+
+    // Empty slots at midnight
+    schedule.scheduleJob('0 0 * * *', () => { 
+        fetch(`${host}/api/auth/emptyslots`, {
+            method: 'GET', 
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('token')
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+        window.location.reload();
+     }) // run everyday at midnight
+
 
 
     useEffect(() => {
@@ -69,9 +93,12 @@ const AdminAreas = () => {
 
     const handleAddArea = (e)=>{
         e.preventDefault();
-        refClose2.current.click();
         console.log("Adding new Area");
         console.log(newArea);
+        if(newArea.name.length<3 || newArea.address.length<10 || newArea.totalslots<2){
+            alert("Please enter valid details\n(area name must be atleast 3 characters long, address must be atleast 10 characters long and total slots must be minimum 2)")
+            return;
+        }
         fetch(`${host}/api/auth/addarea`, {
             method: 'POST', 
             headers: {
@@ -83,11 +110,35 @@ const AdminAreas = () => {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
+            alert("Adding the new area")
         })
         .catch((error) => {
             console.error('Error:', error);
         });
-
+        refClose2.current.click();
+        window.location.reload();
+    }
+    const handleEmptySlots = ()=>{
+        ref3.current.click();
+    }
+    const handleEmptySlotsCnfm = ()=>{
+        fetch(`${host}/api/auth/emptyslots`, {
+            method: 'GET', 
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('token')
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            alert("Successful")
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+        refClose3.current.click();
+        window.location.reload();
     }
     
 
@@ -199,7 +250,7 @@ const AdminAreas = () => {
                     className="form-control"
                     id="name"
                     name="name"
-                    // aria-describedby="emailHelp"
+                    minLength={3}
                     onChange={onChange}
                     required
                   />
@@ -214,7 +265,7 @@ const AdminAreas = () => {
                     id="address"
                     name="address"
                     onChange={onChange}
-                    // minLength={5}
+                    minLength={10}
                     required
                   />
                 </div>
@@ -228,6 +279,7 @@ const AdminAreas = () => {
                     id="totalslots"
                     name="totalslots"
                     onChange={onChange}
+                    min={2}
                     // minLength={5}
                     required
                   />
@@ -254,20 +306,79 @@ const AdminAreas = () => {
           </div>
         </div>
       </div>
+      {/* Third MODAL FOR empty slots */}
+      <button
+        ref={ref3}
+        type="button"
+        className="btn btn-primary d-none"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal3"
+      >
+        Launch demo modal
+      </button>
+
+      <div
+        className="modal fade"
+        id="exampleModal3"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3 className="modal-title" id="exampleModalLabel" style={{color: "red"}}>
+                Confirm deallocation of all slots
+              </h3>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div className="modal-body">
+              <h5> <b>Note: </b> This action will deallocate all the slots from booked to not booked. Note that this action is irreversible.</h5>
+            </div>
+            <div className="modal-footer">
+              <button 
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                ref = {refClose3}
+              >
+                Close
+              </button>
+              <button
+                onClick={handleEmptySlotsCnfm}
+                type="button"
+                className="btn btn-primary"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <div>
         <h1 className='my-5'>Area Information</h1>
         <div className="text-center my-5">
-            <button type="button" class="btn btn-success btn-lg" onClick={()=>handleAddNewArea()}>Add new area</button>
-
+            <button type="button" class="btn btn-success btn-lg mx-3" onClick={()=>handleAddNewArea()}>Add new area</button>
+            <button type="button" class="btn btn-danger btn-lg mx-3" onClick={()=>handleEmptySlots()}>Empty slots</button>
         </div>
+        <div style={{overflowX : 'auto'}}>
 
-        <table className="table table-hover">
+        <table className="table table-hover ">
   <thead>
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Address</th>
+      <th scope="col">Ratings</th>
       <th scope="col">Total slots</th>
+      <th scope="col">Available slots</th>
     </tr>
   </thead>
   <tbody>
@@ -277,16 +388,18 @@ const AdminAreas = () => {
             return(<tr key={area._id}>
                 <td>{area.name}</td>
                 <td>{area.address}</td>
+                <td>{area.avgRating==null?(<>unrated</>): (area.avgRating )}</td>
                 <td>{area.totalSlots}</td>
+                <td>{area.totalSlots-area.totalBookedSlots}</td>
                 <td><button className='btn btn-danger' onClick={()=>handleDelete(area)}>Delete</button></td>
             </tr>)
         })
     }
     
     
-   
   </tbody>
 </table>
+</div>
     
     
     </div>

@@ -23,7 +23,7 @@ function App() {
             <Navbar />
             <div className="container">
             <Routes>
-                <Route exact path="/" element={<Home />} />
+                <Route exact path="/" element={<Area />} />
                 <Route exact path="/areas" element={<Area/>} />
                 <Route exact path="/about" element={<About />} />
                 <Route exact path="/areas/slots" element={<Slots />} />

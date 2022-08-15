@@ -65,6 +65,18 @@ const Area = () => {
             navigate('/login');
             return;
         }}
+        if(review.review.length<3 && (review.rating<1 || review.rating>5)){
+            alert('Review should be atleast 3 characters long and rating must be in between 1 and 5');
+            return;
+        }
+        if(review.review.length<3){
+            alert('Review should be atleast 3 characters long');
+            return;
+        }
+        if(review.rating<1 || review.rating>5){
+            alert('Rating should be in between 1 and 5');
+            return;
+        }
 
         const areaid = areaToReview._id;
         const authToken = localStorage.getItem('token');
@@ -72,6 +84,7 @@ const Area = () => {
         console.log("here: ", authToken);
         const data = {areaid: areaid, rating: ratingg, review: review.review};
         console.log("data: ", data);
+        
 
         fetch(`${host}/api/auth/review`, {
             method: 'POST', 
@@ -160,7 +173,7 @@ const Area = () => {
                     name="review"
                     // value={note.edescription}
                     onChange={onChange}
-                    // minLength={5}
+                    minLength={3}
                     required
                   />
                 </div>

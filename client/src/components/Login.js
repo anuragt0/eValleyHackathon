@@ -14,6 +14,10 @@ const Login = (props) => {
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
+
+
+
+
         const response = await fetch(`${host}/api/auth/login`, {
             method: 'POST',
             headers: {
@@ -51,6 +55,7 @@ const Login = (props) => {
             window.location.reload();
         }
         else{
+            alert("Invalid credentials");
             console.log("Please enter valid credentials");
         }
     }
